@@ -1,0 +1,50 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>Tasks</h1>
+      <p class="subtitle">
+        Welcome, {{ authService.currentUser()?.firstName ?? authService.currentUser()?.email }}
+      </p>
+    </div>
+    <button type="button" class="btn-logout" (click)="authService.logout()">Log out</button>
+  </header>
+
+  <div class="page-actions">
+    <div class="sort-control">
+      <label for="task-sort">Sort by</label>
+      <select
+        id="task-sort"
+        [value]="sortOption()"
+        (change)="handleSortChange($any($event.target).value)"
+      >
+        @for (option of sortOptions; track option) {
+          <option [value]="option">{{ sortLabels[option] }}</option>
+        }
+      </select>
+    </div>
+    <button type="button" #newTaskButton class="btn-primary" (click)="openCreateForm()">+ New Task</button>
+  </div>
+
+  <app-task-list
+    [tasks]="sortedTasks()"
+    [loading]="loading()"
+    [error]="loadError()"
+    [deletingTaskId]="deletingTaskId()"
+    [deleteError]="deleteError()"
+    (edit)="openEditForm($event)"
+    (deleteRequested)="requestDelete($event)"
+    (deleteConfirmed)="confirmDelete($event)"
+    (deleteCancelled)="cancelDelete()"
+  />
+
+  @if (isFormOpen()) {
+    <app-task-form
+      class="form-panel"
+      [task]="editingTask()"
+      [categories]="categories()"
+      (saved)="handleFormSaved()"
+      (cancelled)="closeForm()"
+      (categoryCreated)="handleCategoryCreated($event)"
+    />
+  }
+</div>

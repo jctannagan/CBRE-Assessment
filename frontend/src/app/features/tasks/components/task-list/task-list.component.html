@@ -1,0 +1,72 @@
+@if (loading()) {
+  <p aria-live="polite">Loading tasks…</p>
+}
+
+@if (error(); as errorMessage) {
+  <p class="error" role="alert">{{ errorMessage }}</p>
+}
+
+@if (!loading() && tasks().length === 0) {
+  <p class="empty-state">No tasks yet. Create your first task to get started.</p>
+}
+
+@if (tasks().length > 0) {
+  <ul class="task-list">
+    @for (task of tasks(); track task.id) {
+      <li class="task-row">
+        <div class="task-main">
+          <h3 class="task-title">{{ task.title }}</h3>
+          <p class="task-description">{{ task.description }}</p>
+          <div class="task-meta">
+            @if (task.dueDate) {
+              <span class="due-date">Due {{ task.dueDate | date: 'mediumDate' }}</span>
+            }
+            @if (task.categoryName) {
+              <span class="category">{{ task.categoryName }}</span>
+            }
+            <span [class]="priorityClass(task.priority)">{{ priorityLabels[task.priority] }}</span>
+            <span [class]="statusClass(task.status)">{{ statusLabels[task.status] }}</span>
+          </div>
+        </div>
+
+        @if (deletingTaskId() === task.id) {
+          <div class="delete-confirm">
+            <span>Delete "{{ task.title }}"?</span>
+            @if (deleteError()) {
+              <span class="error" role="alert">{{ deleteError() }}</span>
+            }
+            <button
+              type="button"
+              id="confirm-delete-{{ task.id }}"
+              class="btn btn-danger"
+              [attr.aria-label]="'Confirm delete for ' + task.title"
+              (click)="deleteConfirmed.emit(task.id)"
+            >
+              Yes, delete
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              [attr.aria-label]="'Cancel delete for ' + task.title"
+              (click)="deleteCancelled.emit()"
+            >
+              Cancel
+            </button>
+          </div>
+        } @else {
+          <div class="task-actions">
+            <button type="button" class="btn btn-secondary" (click)="edit.emit(task)">Edit</button>
+            <button
+              type="button"
+              id="delete-btn-{{ task.id }}"
+              class="btn btn-danger-outline"
+              (click)="deleteRequested.emit(task.id)"
+            >
+              Delete
+            </button>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+}

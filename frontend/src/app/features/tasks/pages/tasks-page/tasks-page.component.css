@@ -1,0 +1,80 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 2rem;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: #666;
+}
+
+.btn-logout {
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 0.6rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-control label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sort-control select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.btn-primary {
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  padding: 0.65rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-panel {
+  margin-top: 0.5rem;
+}

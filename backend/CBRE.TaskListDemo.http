@@ -1,0 +1,6 @@
+@CBRE.TaskListDemo_HostAddress = http://localhost:5232
+
+GET {{CBRE.TaskListDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
