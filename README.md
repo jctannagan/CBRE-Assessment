@@ -116,22 +116,14 @@ These two values must match, or the backend will reject the Google ID token duri
 
 The app supports two sign-in paths, email/password and Google SSO, but both end up producing the same app-issued JWT. That way the rest of the API only ever has to understand one auth scheme.
 
-### Why ASP.NET Core Identity
+### ASP.NET Core Identity
 
 Password-based auth is handled by ASP.NET Core Identity (`UserManager<ApplicationUser>`) rather than a hand-rolled solution:
 
 - Password hashing, salting, and validation are security-critical and easy to get subtly wrong. Identity's implementation is well-reviewed and battle-tested, so there's no reason to reinvent it.
 - It integrates directly with EF Core (`ApplicationDbContext` extends `IdentityDbContext<ApplicationUser, IdentityRole, string>`), so user, role, and login-provider storage come for free with a sensible schema and indexing already in place.
 - Role management comes built in too. It isn't heavily used yet, but `Admin` and `User` roles are already seeded on startup, with `User` as the default for new accounts.
-
-### Why Google SSO
-
-Google Sign-In is offered alongside email/password rather than instead of it:
-
-- It removes an entire class of risk (password reuse, weak passwords, phishing) for users who opt into it, by delegating credential verification to Google.
-- It lowers signup friction. It's just one click, with no form to fill out and no password to remember.
-- The trust boundary stays server-side: the frontend never sends a password for Google users. It only forwards the Google-issued ID token, and the backend independently verifies that token (`GoogleJsonWebSignature.ValidateAsync`, checked against the configured audience) before trusting any of its claims.
-- After verification, a Google sign-in produces the exact same kind of app JWT as a password sign-in (see below), so the rest of the API doesn't need to know or care which method a user signed in with.
+- Supports external login integrations out of the box.   
 
 ### Token Flow
 
