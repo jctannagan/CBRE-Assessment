@@ -4,7 +4,6 @@ A task management app with an Angular frontend and an ASP.NET Core Web API backe
 
 ## Table of Contents
 
-- [Description](#description)
 - [Tech Stack](#tech-stack)
 - [Setup Guide](#setup-guide)
   - [Prerequisites](#prerequisites)
@@ -17,10 +16,6 @@ A task management app with an Angular frontend and an ASP.NET Core Web API backe
   - [Why Google SSO](#why-google-sso)
   - [Token Flow](#token-flow)
 - [Database Schema Overview](#database-schema-overview)
-
-## Description
-
-CBRE Task List Demo lets a signed-in user create, categorize, and track tasks with a due date, priority, and status. Each user's tasks and personal categories are private to them; a set of global categories is shared across all users. The backend exposes a REST API secured with JWT bearer authentication, with an OpenAPI/Scalar reference available in development.
 
 ## Tech Stack
 
@@ -82,7 +77,7 @@ dotnet user-secrets init
 
 # Add Secrets
 dotnet user-secrets set "Jwt:Key" "<Generate a secret>"
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=;Database=tasklist_db;Username=;Password="
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=;Database=tasklist_db;Username=<YOUR_USER>;Password=<YOUR_PWD>"
 
 ```
 
@@ -112,7 +107,11 @@ Google Sign-In requires an OAuth 2.0 Client ID from the [Google Cloud Console](h
 
 These two values must match, or the backend will reject the Google ID token during audience validation.
 
+Alternatively, we can probably utilize the ClientID I've generated for testing this out.
+
 ## Authentication
+
+My choices are really limited to what I'm familiar with and have used in my experience; those are a custom auth, .ASPNET's Identity package and Microsoft Identity Platform (EntraID). AspNet Identity seems to be the sensible choice for what it can do out of the box.
 
 The app supports two sign-in paths, email/password and Google SSO, but both end up producing the same app-issued JWT. That way the rest of the API only ever has to understand one auth scheme.
 
@@ -123,7 +122,7 @@ Password-based auth is handled by ASP.NET Core Identity (`UserManager<Applicatio
 - Password hashing, salting, and validation are security-critical and easy to get subtly wrong. Identity's implementation is well-reviewed and battle-tested, so there's no reason to reinvent it.
 - It integrates directly with EF Core (`ApplicationDbContext` extends `IdentityDbContext<ApplicationUser, IdentityRole, string>`), so user, role, and login-provider storage come for free with a sensible schema and indexing already in place.
 - Role management comes built in too. It isn't heavily used yet, but `Admin` and `User` roles are already seeded on startup, with `User` as the default for new accounts.
-- Supports external login integrations out of the box.   
+- Already supports external login integrations.
 
 ### Token Flow
 
