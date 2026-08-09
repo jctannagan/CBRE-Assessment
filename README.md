@@ -108,7 +108,7 @@ Google Sign-In requires an OAuth 2.0 Client ID from the [Google Cloud Console](h
 2. Add `http://localhost:4200` as an authorized JavaScript origin.
 3. Set the client ID in **both** places, since the frontend requests the ID token and the backend independently verifies it:
    - `frontend/src/environments/environment.ts` → `googleClientId`
-   - `backend/appsettings.json` → `Google:ClientId`
+   - `backend/appsettings.json` → `Google:ClientId` or defer it to user-secrets mentioned in the setup
 
 These two values must match, or the backend will reject the Google ID token during audience validation.
 
