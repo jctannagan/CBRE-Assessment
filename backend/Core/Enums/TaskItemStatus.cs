@@ -1,4 +1,4 @@
-namespace CBRE.TaskListDemo.Core.Entities
+namespace CBRE.TaskListDemo.Core.Enums
 {
 	// Named TaskItemStatus (not TaskStatus) to avoid colliding with System.Threading.Tasks.TaskStatus,
 	// which is in scope via ImplicitUsings on the Web SDK.

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using CBRE.TaskListDemo.Core.Entities;
+using CBRE.TaskListDemo.Core.Enums;
 
 namespace CBRE.TaskListDemo.Application.Dtos
 {

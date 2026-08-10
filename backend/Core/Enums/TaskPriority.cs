@@ -1,4 +1,4 @@
-namespace CBRE.TaskListDemo.Core.Entities
+namespace CBRE.TaskListDemo.Core.Enums
 {
 	public enum TaskPriority
 	{

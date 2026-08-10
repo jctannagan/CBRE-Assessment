@@ -1,3 +1,5 @@
+using CBRE.TaskListDemo.Core.Enums;
+
 namespace CBRE.TaskListDemo.Core.Entities
 {
 	public class TaskItem

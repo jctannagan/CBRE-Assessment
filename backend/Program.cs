@@ -1,3 +1,4 @@
+using CBRE.TaskListDemo.Api.Middleware;
 using CBRE.TaskListDemo.Application.Interfaces;
 using CBRE.TaskListDemo.Core.Entities;
 using CBRE.TaskListDemo.Infrastructure.Data;
@@ -68,6 +69,9 @@ builder.Services.AddCors(options =>
 	});
 });
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 builder.Services.AddControllers()
 	.AddJsonOptions(options =>
 	{
@@ -79,6 +83,8 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
+
 if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
