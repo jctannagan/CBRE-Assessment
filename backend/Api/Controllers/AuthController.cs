@@ -3,6 +3,7 @@ using CBRE.TaskListDemo.Application.Interfaces;
 using CBRE.TaskListDemo.Core.Entities;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CBRE.TaskListDemo.Api.Controllers
@@ -14,15 +15,18 @@ namespace CBRE.TaskListDemo.Api.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ITokenService _tokenService;
 		private readonly IConfiguration _config;
+		private readonly IEmailSender _emailSender;
 
 		public AuthController(
 			UserManager<ApplicationUser> userManager,
 			ITokenService tokenService,
-			IConfiguration config)
+			IConfiguration config,
+			IEmailSender emailSender)
 		{
 			_userManager = userManager;
 			_tokenService = tokenService;
 			_config = config;
+			_emailSender = emailSender;
 		}
 
 		[HttpPost("register")]
@@ -111,6 +115,46 @@ namespace CBRE.TaskListDemo.Api.Controllers
 			}
 
 			return await BuildAuthResponse(user);
+		}
+
+		[HttpPost("forgot-password")]
+		public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+		{
+			var user = await _userManager.FindByEmailAsync(request.Email);
+
+			// Always return the same generic response, whether or not the account exists,
+			// to avoid leaking which emails are registered (user enumeration).
+			if (user != null)
+			{
+				var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+				var frontendOrigin = _config["Cors:AllowedOrigin"] ?? "http://localhost:4200";
+				var encodedToken = Uri.EscapeDataString(token);
+				var encodedEmail = Uri.EscapeDataString(request.Email);
+				var resetLink = $"{frontendOrigin}/reset-password?email={encodedEmail}&token={encodedToken}";
+
+				await _emailSender.SendEmailAsync(
+					request.Email,
+					"Reset your password",
+					$"<p>You requested a password reset. Click <a href=\"{resetLink}\">here</a> to choose a new password.</p>" +
+					"<p>If you didn't request this, you can safely ignore this email.</p>");
+			}
+
+			return Ok(new { message = "If an account with that email exists, a password reset link has been sent." });
+		}
+
+		[HttpPost("reset-password")]
+		public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+		{
+			var user = await _userManager.FindByEmailAsync(request.Email);
+			if (user == null)
+				return BadRequest(new { errors = new[] { "Invalid or expired reset link." } });
+
+			var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+			if (!result.Succeeded)
+				return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
+
+			return Ok(new { message = "Your password has been reset successfully." });
 		}
 
 		[HttpPost("refresh")]

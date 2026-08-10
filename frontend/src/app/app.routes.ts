@@ -20,6 +20,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/pages/register/register.component').then(c => c.RegisterComponent)
     },
     {
+        path: 'forgot-password',
+        canActivate: [guestGuard],
+        loadComponent: () => import('./features/auth/pages/forgot-password/forgot-password.component').then(c => c.ForgotPasswordComponent)
+    },
+    {
+        path: 'reset-password',
+        canActivate: [guestGuard],
+        loadComponent: () => import('./features/auth/pages/reset-password/reset-password.component').then(c => c.ResetPasswordComponent)
+    },
+    {
         path: 'tasks',
         canActivate: [authGuard],
         loadComponent: () => import('./features/tasks/pages/tasks-page/tasks-page.component').then(c => c.TasksPageComponent)

@@ -5,8 +5,10 @@ import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { tokenStorage } from '../../../core/auth/token-storage';
 import { AuthResponse, UserDto } from '../models/auth-response';
+import { ForgotPasswordRequest } from '../models/forgot-password';
 import { Login } from '../models/login';
 import { UserRegistration } from '../models/register';
+import { ResetPasswordRequest } from '../models/reset-password';
 
 const WITH_CREDENTIALS = { withCredentials: true };
 
@@ -35,6 +37,14 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.baseUrl}/google`, { idToken }, WITH_CREDENTIALS)
       .pipe(tap((response) => this.applySession(response)));
+  }
+
+  forgotPassword(payload: ForgotPasswordRequest): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/forgot-password`, payload);
+  }
+
+  resetPassword(payload: ResetPasswordRequest): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/reset-password`, payload);
   }
 
   /**

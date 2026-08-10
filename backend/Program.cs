@@ -5,6 +5,7 @@ using CBRE.TaskListDemo.Infrastructure.Data;
 using CBRE.TaskListDemo.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
 
 // Add Database Context
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")

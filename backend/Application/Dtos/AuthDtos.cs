@@ -6,6 +6,10 @@
 
 	public record GoogleLoginRequest(string IdToken);
 
+	public record ForgotPasswordRequest(string Email);
+
+	public record ResetPasswordRequest(string Email, string Token, string NewPassword);
+
 	public record AuthResponse(string Token, DateTime ExpiresAtUtc, UserDto User);
 
 	public record UserDto(string Id, string Email, string? FirstName, string? LastName, IList<string> Roles);
